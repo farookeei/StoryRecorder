@@ -1,14 +1,16 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 import '../themes/color_variables.dart';
 
 class VideoPage extends StatefulWidget {
-  final String filePath;
+  final XFile file;
 
-  const VideoPage({Key? key, required this.filePath}) : super(key: key);
+  const VideoPage({Key? key, required this.file}) : super(key: key);
 
   @override
   _VideoPageState createState() => _VideoPageState();
@@ -24,8 +26,9 @@ class _VideoPageState extends State<VideoPage> {
   }
 
   Future _initVideoPlayer() async {
-    _videoPlayerController = VideoPlayerController.file(File(widget.filePath));
+    _videoPlayerController = VideoPlayerController.file(File(widget.file.path));
     await _videoPlayerController.initialize();
+
     await _videoPlayerController.setLooping(true);
     await _videoPlayerController.play();
   }
@@ -45,6 +48,14 @@ class _VideoPageState extends State<VideoPage> {
         elevation: 0,
         backgroundColor: ReplyColors.neutralBold,
         actions: [
+          IconButton(
+              onPressed: () {
+                Share.shareXFiles([widget.file], text: 'Check out this video!');
+              },
+              icon: const Icon(
+                Icons.share,
+                color: ReplyColors.white,
+              )),
           IconButton(
             icon: const Icon(
               Icons.check,
